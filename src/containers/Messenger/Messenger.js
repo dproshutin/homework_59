@@ -27,14 +27,11 @@ class Messenger extends Component {
             throw new Error("Something went wrong with network request");
         }).then(messages => {
             this.setState({messages});
-            messages.map(message => {
-                lastDateTime=message.datetime
-            });
+            messages.map(message => lastDateTime=message.datetime);
             return messages;
         }).then(messages => {
             this.setState({lastDateTime});
-        })
-        ;
+        });
     };
 
     getMessagesSinceLastDateTime = () => {
@@ -52,6 +49,7 @@ class Messenger extends Component {
                 newMessages.map(message => {
                     messages.push(message);
                     lastDateTime = message.datetime;
+                    return newMessages;
                 })
             } else {
                 lastDateTime = this.state.lastDateTime;

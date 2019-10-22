@@ -6,13 +6,19 @@ import Button from "../../components/UI/Button/Button";
 import TextArea from "../../components/UI/TextArea/TextArea";
 
 class Messenger extends Component {
-    state = {
-        messages: [],
-        currentAuthor: "",
-        currentMessage: ""
-    };
+    constructor(props) {
+        super(props);
+        this.myInterval = null;
+        this.state = {
+            messages: [],
+            currentAuthor: "",
+            currentMessage: "",
+            lastDateTime: null
+        };
+    }
 
-    componentDidMount() {
+    getMessages = () => {
+        let lastDateTime;
         const M_URL = "http://146.185.154.90:8000/messages";
         fetch(M_URL).then(response => {
             if (response.ok) {
@@ -21,9 +27,53 @@ class Messenger extends Component {
             throw new Error("Something went wrong with network request");
         }).then(messages => {
             this.setState({messages});
-        });
+            messages.map(message => {
+                lastDateTime=message.datetime
+            });
+            return messages;
+        }).then(messages => {
+            this.setState({lastDateTime});
+        })
+        ;
+    };
 
+    getMessagesSinceLastDateTime = () => {
+        let lastDateTime;
+        let messages;
+        let NM_URL = "http://146.185.154.90:8000/messages?datetime=" + this.state.lastDateTime;
+        fetch(NM_URL).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("Something went wrong with network request");
+        }).then(newMessages => {
+            messages = [...this.state.messages];
+            if (newMessages.length > 0) {
+                newMessages.map(message => {
+                    messages.push(message);
+                    lastDateTime = message.datetime;
+                })
+            } else {
+                lastDateTime = this.state.lastDateTime;
+            }
+            return newMessages;
+        }).then(response => {
+            this.setState({messages, lastDateTime});
+        })
+    };
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({behavior: "smooth", block: 'end', inline: "nearest"});
+    };
+
+    componentDidMount() {
+        this.getMessages();
+        this.myInterval = setInterval(this.getMessagesSinceLastDateTime, 3000);
+        setTimeout(this.scrollToBottom, 1000)
     }
+    componentWillUnmount() {
+        clearInterval(this.myInterval);
+    }
+
     sendMessage = () => {
         const url = 'http://146.185.154.90:8000/messages';
         const data = new URLSearchParams();
@@ -49,7 +99,6 @@ class Messenger extends Component {
         this.setState({currentMessage});
     };
     render() {
-        console.log(this.state);
         let messagesList = null;
         if (this.state.messages.length === 0) {
             messagesList = (
@@ -58,7 +107,7 @@ class Messenger extends Component {
                 </form>
             );
         } else {
-            messagesList = this.state.messages.reverse().map(message => (
+            messagesList = this.state.messages.map(message => (
                 <MessageBand
                     text={message.message}
                     author={message.author}
@@ -69,8 +118,11 @@ class Messenger extends Component {
         }
         return (
             <div className="Container">
-                <div className="MessagesPanel">
+                <div className="MessagesPanel"
+
+                >
                     {messagesList}
+                    <div style={{float: 'left', clear:'both'}} ref={(el) => {this.messagesEnd = el}}></div>
                 </div>
                 <div className="NewMessage">
                     <label>Username:</label>

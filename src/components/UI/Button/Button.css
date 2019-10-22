@@ -7,12 +7,12 @@
     cursor: pointer;
     font: inherit;
     padding: 10px;
-    margin: 10px;
+    margin-top: 20px;
     font-weight: bold;
 }
 .add {
-    color: #944317;
-    border: 1px solid #944317;
+    color: #d9534f;
+    border: 1px solid #d9534f;
 }
 .delete {
     color: red;

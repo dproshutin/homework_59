@@ -73,13 +73,13 @@ class Messenger extends Component {
                     {messagesList}
                 </div>
                 <div className="NewMessage">
-                    <label htmlFor="">Username:</label>
+                    <label>Username:</label>
                     <InputField
                         username={this.state.currentAuthor}
                         placeholder="Add a username"
                         change={this.changeAuthor}
                     />
-                    <label htmlFor=""></label>
+                    <label>Message:</label>
                     <TextArea
                         type="text"
                         cols="30"

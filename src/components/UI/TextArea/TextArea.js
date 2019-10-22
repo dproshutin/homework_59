@@ -3,9 +3,11 @@ import React from 'react';
 const TextArea = props => {
     return (
         <textarea
-            type="text"
+            type={props.type}
+            rows={props.rows}
+            cols={props.cols}
             placeholder={props.placeholder}
-            value={props.title}
+            value={props.message}
             onChange={props.change}
         />
     );

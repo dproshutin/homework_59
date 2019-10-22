@@ -5,7 +5,7 @@ const InputField = props => {
         <input
             type="text"
             placeholder={props.placeholder}
-            value={props.title}
+            value={props.username}
             onChange={props.change}
         />
     );

@@ -7,6 +7,7 @@ const InputField = props => {
             placeholder={props.placeholder}
             value={props.username}
             onChange={props.change}
+            required
         />
     );
 };

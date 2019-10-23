@@ -9,6 +9,7 @@ const TextArea = props => {
             placeholder={props.placeholder}
             value={props.message}
             onChange={props.change}
+            required
         />
     );
 };

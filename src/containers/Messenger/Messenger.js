@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import MessageBand from "../MessagesBand/MessagesBand";
-import './Messenger.css';
 import InputField from "../../components/UI/InputField/InputField";
 import Button from "../../components/UI/Button/Button";
 import TextArea from "../../components/UI/TextArea/TextArea";
+import './Messenger.css';
 
 class Messenger extends Component {
     constructor(props) {
@@ -59,18 +59,6 @@ class Messenger extends Component {
             this.setState({messages, lastDateTime});
         })
     };
-    scrollToBottom = () => {
-        this.messagesEnd.scrollIntoView({behavior: "smooth", block: 'end', inline: "nearest"});
-    };
-
-    componentDidMount() {
-        this.getMessages();
-        this.myInterval = setInterval(this.getMessagesSinceLastDateTime, 3000);
-        setTimeout(this.scrollToBottom, 1000)
-    }
-    componentWillUnmount() {
-        clearInterval(this.myInterval);
-    }
 
     sendMessage = () => {
         const url = 'http://146.185.154.90:8000/messages';
@@ -88,14 +76,26 @@ class Messenger extends Component {
             }
         });
     };
+
     changeAuthor = (event) => {
         const currentAuthor = event.target.value;
         this.setState({currentAuthor});
     };
+
     changeMessage = (event) => {
         const currentMessage = event.target.value;
         this.setState({currentMessage});
     };
+
+    componentDidMount() {
+        this.getMessages();
+        this.myInterval = setInterval(this.getMessagesSinceLastDateTime, 3000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.myInterval);
+    }
+
     render() {
         let messagesList = null;
         if (this.state.messages.length === 0) {
@@ -105,7 +105,8 @@ class Messenger extends Component {
                 </form>
             );
         } else {
-            messagesList = this.state.messages.map(message => (
+            const messagesReversed = [...this.state.messages].reverse();
+            messagesList = messagesReversed.map(message => (
                 <MessageBand
                     text={message.message}
                     author={message.author}
@@ -120,7 +121,6 @@ class Messenger extends Component {
 
                 >
                     {messagesList}
-                    <div style={{float: 'left', clear:'both'}} ref={(el) => {this.messagesEnd = el}}></div>
                 </div>
                 <div className="NewMessage">
                     <label>Username:</label>

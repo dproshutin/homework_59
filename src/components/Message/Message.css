@@ -1,6 +1,8 @@
 .LeftAlign {
     float: left;
+    padding-left: 10px;
 }
 .RightAlign {
     float: right;
+    padding-right: 10px;
 }
